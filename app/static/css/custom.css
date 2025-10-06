@@ -10,20 +10,22 @@ body {
     height: auto;
 }
 
-
-
-/* navbar */
 .sidebar {
-    height: 100vh;
-    background: linear-gradient(rgba(70, 64, 156, 0.548), rgba(0, 0, 0, .9)), url(../img/img1.jpeg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    box-shadow: 5px 7px 25px #999;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+    background-image: url("https://library.suss.edu.sg/wp-content/uploads/2023/11/Study-Space_High-table-2-cropped-300x200.png") !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    box-shadow: 5px 7px 25px #999 !important;
+    width: 16.666667% !important;
 }
 
 .bottom-border {
-    border-bottom: 1px groove #eee;
+    border-bottom: 1px solid #333;
 }
 
 .sidebar-link {
@@ -89,10 +91,41 @@ body {
     border-radius: 50%;
 }
 
+.main-content-wrapper {
+    margin-left: 16.666667%;
+    min-height: 100vh;
+    background-color: white !important;
+}
+
+.scrollable-content {
+    margin-top: 60px;
+    padding: 20px;
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1) inset;
+}
+
 @media (max-width: 768px) {
     .sidebar {
-        position: static;
+        position: static !important;
+        height: auto !important;
+        width: 100% !important;
+    }
+
+    .main-content-wrapper {
+        margin-left: 0;
+    }
+
+    .top-navbar {
+        position: static !important;
+        left: 0 !important;
+        padding-left: 15px !important;
+    }
+
+    .scrollable-content {
+        margin-top: 0;
         height: auto;
+        overflow-y: visible;
     }
 }
 
@@ -117,22 +150,26 @@ tr {
     border-bottom: 2px solid rgba(221, 221, 221, 0.465);
   }
 
- /* table tr td {
-    border-right: 2px solid rgba(221, 221, 221, 0.465);
-  }
-  
-  table tr td:last-of-type {
-    border: none;
-  } */
-  
 .top-navbar {
-    position: static;
-    background: linear-gradient(rgba(167, 165, 202, 0.548), rgba(53, 27, 87, 0.377)), url(../img/img1.jpeg);
+    position: static !important;
+    top: 0 !important;
+    right: 0 !important;
+    left: 16.666667% !important;
+    z-index: 999 !important;
+    padding-left: 30px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: #e6ffe6 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
-/* end of navbar */
+.top-navbar .col-md-4{
+    padding-left: 20px !important;
+    padding-top: 10px;
 
-/* cards */
+}
+
+
 .card-common {
     box-shadow: 1px 2px 5px #999;
     transition: all .4s;
@@ -143,4 +180,3 @@ tr {
     transform: translateY(-1px);
 }
 
-/* end of cards */
