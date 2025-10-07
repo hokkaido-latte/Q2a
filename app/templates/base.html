@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!--<link rel="title icon" href="{{ url_for('static', filename='img/title-img.png')}}">-->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
           integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
@@ -20,50 +19,42 @@
 </head>
 
 <body>
-    <!-- navbar -->
-    <nav class="navbar navbar-expand-md navbar-light">
-        <button class="navbar-toggler ml-auto mb-2 bg-light" type="button" data-toggle="collapse" data-target="#myNavbar">
+    <nav class="navbar navbar-light fixed-top">
+        <button class="navbar-toggler ml-auto mb-2 bg-light d-md-none" type="button" data-toggle="collapse" data-target="#mySidebar">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <div class="container-fluid">
-                <div class="row">
-                    <!-- sidebar -->
-                    <div class="col-xl-2 col-lg-3 col-md-4 sidebar">
-                        <a href="#" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">
-                            SG Library
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-xl-2 col-lg-3 col-md-4 sidebar collapse d-md-block" id="mySidebar">
+                <a href="#" class="navbar-brand text-white d-block mx-auto text-center py-3 mb-4 bottom-border">
+                    SG Library
+                </a>
+                <ul class="navbar-nav flex-column mt-4">
+                    <li class="nav-item">
+                        <a href="/books" class="nav-link text-white p-3 mb-2 sidebar-link">
+                            <i class="fas fa-address-card text-light fa-lg mr-3"></i>Book Titles
                         </a>
-                        <ul class="navbar-nav flex-column mt-4">
-                            <li class="nav-item">
-                                <a href="/books" class="nav-link text-white p-3 mb-2 sidebar-link">
-                                    <i class="fas fa-address-card text-light fa-lg mr-3"></i>Book Titles
-                                </a>
-                            </li>
-                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xl-10 col-lg-9 col-md-8 ml-auto main-content-wrapper">
+
+                <div class="row align-items-center py-2 top-navbar">
+                    <div class="col-md-4">
+                        <br />
+                        <h4 class="text-dark text-uppercase mb-0">{{ panel }}</h4>
                     </div>
-                    <!--end of sidebar-->
-                    <!-- main content area -->
-                    <div class="col-xl-10 col-lg-9 col-md-8 ml-auto main-content-wrapper">
-                        <!-- top-nav -->
-                        <div class="row align-items-center py-2 top-navbar">
-                            <div class="col-md-4">
-                                <br />
-                                <h4 class="text-dark text-uppercase mb-0">{{ panel }}</h4>
-                            </div>
-                        </div>
-                        <!-- end of top-nav -->
-                        <!-- scrollable main content -->
-                        <div class="scrollable-content">
-                            <div class="row">
-                                {% block mainblock %}
-                                {% endblock %}
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div class="scrollable-content">
+                    {% block mainblock %}
+                    {% endblock %}
+
                 </div>
             </div>
         </div>
-    </nav>
-    <!-- end of navbar -->
+    </div>
 </body>
 </html>
