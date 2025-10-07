@@ -28,11 +28,11 @@
 </div>
 <!-- end of filter bar -->
 {% for book in books|sort(attribute='title') %}
-<div class="col-12 p-2 book-item" data-category="{{ book.category }}" **>
+<div class="col-12 p-2 book-item" data-category="{{ book.category }}">
     <div class="card card-common h-100">
-        <div class="card-body d-flex p-0 align-items-start">
+        <div class="card-body d-flex flex-column d-sm-flex flex-sm-row p-0 align-items-sm-start">
             <!-- Image section -->
-            <div class="bg-image hover-overlay ripple flex-shrink-0 p-3" data-mdb-ripple-color="light" style="width: 150px;">
+            <div class="bg-image hover-overlay ripple flex-shrink-0 p-3 mx-auto order-0 order-sm-0 w-100 d-flex justify-content-center" data-mdb-ripple-color="light" style="max-width: 280px;">
                 <img src="{{ book.url }}" class="img-fluid h-100" style="object-fit: cover;" />
                 <a href="#!">
                     <div class="mask" style="background-color: rgba(255, 255, 255, 1);"></div>
@@ -40,7 +40,7 @@
             </div>
 
             <!-- Text content section -->
-            <div class="p-3 flex-grow-1 ms-3">
+            <div class="p-3 flex-grow-1 mx-auto order-1 ms-sm-3">
                 <h5 class="card-title">{{ book.title }} by {{ book.authors|join(', ') }}</h5>
                 <p class="card-text">Category: {{ book.category }}, {{ book.genres|join(', ') }}</p>
                 <p class="card-text">Pages: {{ book.pages }}</p>
@@ -82,7 +82,5 @@
         });
     });
 </script>
-
-
 
 {% endblock %}
