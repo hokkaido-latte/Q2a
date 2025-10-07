@@ -1,6 +1,6 @@
 ##create a simple book controller that routes to /books.html by default
 from flask import Blueprint, render_template
-from models.books import all_books
+from ..models.books import all_books
 
 bookController = Blueprint('bookController', __name__)
 
