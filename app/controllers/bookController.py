@@ -12,22 +12,6 @@ books = Blueprint('bookController', __name__)
 @books.route('/books')
 def books_list():
     allBooks = Book.getAllBooks()
-    if not allBooks:
-      for eachBook in all_books:
-          newBook = Book.createBook(
-              genres=eachBook['genres'],
-              title=eachBook['title'],
-              category=eachBook['category'],
-              url=eachBook['url'],
-              description=eachBook['description'],
-              authors=eachBook['authors'],
-              pages=eachBook['pages'],
-              available=eachBook['available'],
-              copies=eachBook['copies']
-            )
-          Book.saveBook(newBook)
-          print("Using all_books")
-          allBooks = Book.getAllBooks()
     return render_template('books.html', panel="Book Titles", books=allBooks)
 
 

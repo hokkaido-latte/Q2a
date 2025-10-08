@@ -193,17 +193,26 @@ class Book(db.Document):
 
     @staticmethod
     def getAllBooks():
+        if Book.objects.count() == 0:
+            print("MongoDB is empty. Populating with all_books variable")
+            for eachBook in all_books:
+                newBook = Book.createBook(
+                genres=eachBook['genres'],
+                title=eachBook['title'],
+                category=eachBook['category'],
+                url=eachBook['url'],
+                description=eachBook['description'],
+                authors=eachBook['authors'],
+                pages=eachBook['pages'],
+                available=eachBook['available'],
+                copies=eachBook['copies']
+                )
         return Book.objects()
 
     @staticmethod
     def createBook(genres, title, category, url, description, authors, pages, available, copies):
         return Book(genres=genres, title=title, category=category, url=url, description=description, authors=authors, pages=pages, available=available, copies=copies).save()
-        
+    
     @staticmethod
-    def saveBook(book):
-        book.save()
-        return book
-
-    # @staticmethod
-    # def deleteBook(book):
-    #     book.delete()
+    def deleteBook(book):
+        book.delete()
