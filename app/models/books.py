@@ -171,3 +171,39 @@ all_books = [
         , 'copies': 1
         }
 ]
+
+from flask_mongoengine import MongoEngine
+from app import db
+
+class Book(db.Document):
+    meta = {'collection': 'books'}
+    genres = db.ListField(db.StringField(max_length=30))
+    title = db.StringField(max_length=100, required=True)
+    category = db.StringField(max_length=50)
+    url = db.StringField()
+    description = db.ListField(db.StringField())
+    authors = db.ListField(db.StringField(max_length=50))
+    pages = db.IntField()
+    available = db.IntField()
+    copies = db.IntField()
+
+    @staticmethod
+    def getBook(title):
+        return Book.objects(title=title).first()
+
+    @staticmethod
+    def getAllBooks():
+        return Book.objects()
+
+    @staticmethod
+    def createBook(genres, title, category, url, description, authors, pages, available, copies):
+        return Book(genres=genres, title=title, category=category, url=url, description=description, authors=authors, pages=pages, available=available, copies=copies).save()
+        
+    @staticmethod
+    def saveBook(book):
+        book.save()
+        return book
+
+    # @staticmethod
+    # def deleteBook(book):
+    #     book.delete()
