@@ -1,10 +1,13 @@
 from flask import Blueprint, request, redirect, render_template, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
+from datetime import datetime, timedelta
+import random
 
 from ..models.forms import RegForm, BookForm
 from ..models.users import User
 from ..models.books import all_books, Book
+from ..models.loans import Loan
 
 books = Blueprint('bookController', __name__)
 
@@ -18,9 +21,17 @@ if not adminUser:
 if not peteroh:
     nonadminUser = User.createUser(email="poh@lib.sg", password=PETER_HASH, name="Peter Oh")
 
+
+#For testing
 allUsers = User.getAllUsers()
 for eachuser in allUsers:
     print(eachuser['name'])
+
+allLoans = Loan.getAllLoans()
+for eachLoan in allLoans:
+    Loan.deleteLoan(eachLoan)
+
+Book.restoreAllAvailability()
 
 @books.route('/')
 @books.route('/books')
@@ -115,3 +126,32 @@ def addBook():
             flash("An error occurred while adding your book")
    
     return render_template('addbook.html', panel="Add A Book",genres=genres, form=form)
+
+@books.route('/loan/<string:book_title>')
+@login_required
+def loanBook(book_title):
+    #Get current user
+    member = current_user
+    if member.getName() != "Admin":
+        #Create a random date 10-20 days before today's date for testing purpose
+        borrowDate = datetime.now() - timedelta(days=random.randint(10,20))
+        loanBook = Book.getBook(title=book_title)
+        if not loanBook:
+            flash(f"Book '{book_title}' does not exist", "warning")
+            return redirect(url_for('bookController.books_list'))
+
+        loan_result = Loan.createLoan(member=member, book=loanBook, borrowDate=borrowDate)
+
+        if isinstance(loan_result, Loan):
+            flash(f"You have successfully borrowed '{book_title}'")
+        elif loan_result=="ALREADY_BORROWED":
+            flash(f"Failed to loan '{book_title}'. You already have an unreturned loan for this book.", "danger")
+        elif loan_result=="UNAVAILABLE":
+            flash(f"Failed to loan '{book_title}'. This book is currently unavailable'", "danger")
+        else:
+            flash(f"Failed to loan '{book_title}' due to enexpected error")
+
+        return redirect(url_for('bookController.books_list'))
+
+    flash("Admin account cannot use loan feature", "warning")
+    return redirect(url_for('bookController.books_list'))

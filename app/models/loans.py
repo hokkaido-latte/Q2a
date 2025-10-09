@@ -1,3 +1,4 @@
+import stat
 from flask_mongoengine import MongoEngine
 from app import db
 from ..models.books import Book
@@ -13,17 +14,31 @@ class Loan(db.Document):
 
 
     #Create loan document
+    # @staticmethod
+    # def createLoan(member, book, borrowDate):
+    #     if Loan.getActiveLoansByMember(member).count()==0:
+    #         loan = Loan(member=member, book=book, borrowDate=borrowDate)
+    #         if Book.loanBook(book):
+    #             loan.save()
+    #             return loan
+    #         else:
+    #            return None
+    #     else:
+    #         return None
+
     @staticmethod
     def createLoan(member, book, borrowDate):
-        if Loan.getActiveLoansByMember(member).count()==0:
-            loan = Loan(member=member, book=book, borrowDate=borrowDate)
-            if Book.loanBook(book):
-                loan.save()
-                return loan
-            else:
-               return None
+        if Loan.getActiveLoansByMember(member, book):
+            return "ALREADY_BORROWED"
+
+        loan = Loan(member=member,book=book,borrowDate=borrowDate)
+
+        if Book.loanBook(book):
+            loan.save()
+            return loan
+
         else:
-            return None
+            return "UNAVAILABLE"
 
     #Retrieve loan documents by member
     @staticmethod
@@ -61,3 +76,12 @@ class Loan(db.Document):
     @staticmethod
     def getActiveLoansByMember(member):
         return Loan.objects(member=member, returnDate=None)   
+
+    #Create a method to see if a member has an active loan for a specific book
+    @staticmethod
+    def getActiveLoansByMember(member, book):
+        return Loan.objects(member=member, book=book, returnDate=None).first()
+
+    @staticmethod
+    def getAllLoans():
+        return Loan.objects()

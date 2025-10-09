@@ -2,32 +2,23 @@
 {% extends "base.html" %}
 {% block mainblock %}
 <div class="col-xl-6 col-sm-4 p-2">
-  <div class="card card-common">
-  <div class="card-header">
-    <h2>Login</h2>
-  </div>
-  <div class="card-body">
-      {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-          <li style="color:red;">{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-      {% endwith %}
-      <form action="/login" method="post">
-          {{ render_field(form.email, type="email", placeholder="Enter email", id="email") }}
-          {{ render_field(form.password, type="password", placeholder="Enter password", id="pwd") }}
-          {{ form.hidden_tag() }}
-          <div>
-            <label class="col-md-4">
-              <input type="checkbox" name="checkbox" value="1"> Remember Me
-            </label>
-          </div>
-          <div class="d-flex justify-content-end"><button type="submit" class="btn btn-success" , value="login">Submit</button></div>
-      </form>
-  </div>
-</div>
-<div>
-{% endblock %}
+    <div class="card card-common">
+        <div class="card-header">
+            <h2>Login</h2>
+        </div>
+        <div class="card-body">
+            <form action="/login" method="post">
+                {{ render_field(form.email, type="email", placeholder="Enter email", id="email") }}
+                {{ render_field(form.password, type="password", placeholder="Enter password", id="pwd") }}
+                {{ form.hidden_tag() }}
+                <div>
+                    <label class="col-md-4">
+                        <input type="checkbox" name="checkbox" value="1"> Remember Me
+                    </label>
+                </div>
+                <div class="d-flex justify-content-end"><button type="submit" class="btn btn-success" , value="login">Submit</button></div>
+            </form>
+        </div>
+    </div>
+    <div>
+        {% endblock %}
