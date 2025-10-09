@@ -218,3 +218,22 @@ class Book(db.Document):
     def deleteBook(book):
         book.delete()
 
+    #Write method to loan book
+    @staticmethod
+    def loanBook(book):
+        if book.available > 0:
+            book.available -= 1
+            book.save()
+            return True
+        else:
+            return False
+
+    #Write method to return book
+    @staticmethod
+    def returnBook(book):
+        if book.available < book.copies:
+            book.available += 1
+            book.save()
+            return True
+        else:
+            return False
