@@ -238,13 +238,13 @@ class Book(db.Document):
         else:
             return False
 
-    @staticmethod
-    def restoreAllAvailability():
-        books = Book.objects()
-        for book in books:
-            book.available = book.copies
-            book.save()
-        alice = Book.getBook("Accomplice to the Villain")
-        alice.available = 0
-        alice.save()
-        return True
+    # @staticmethod
+    # def restoreAllAvailability():
+    #     books = Book.objects()
+    #     for book in books:
+    #         book.available = book.copies
+    #         book.save()
+    #     alice = Book.getBook("Accomplice to the Villain")
+    #     alice.available = 0
+    #     alice.save()
+    #     return True

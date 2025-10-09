@@ -27,11 +27,11 @@ allUsers = User.getAllUsers()
 for eachuser in allUsers:
     print(eachuser['name'])
 
-allLoans = Loan.getAllLoans()
-for eachLoan in allLoans:
-    Loan.deleteLoan(eachLoan)
+# allLoans = Loan.getAllLoans()
+# for eachLoan in allLoans:
+#     Loan.deleteLoan(eachLoan)
 
-Book.restoreAllAvailability()
+# Book.restoreAllAvailability()
 
 @books.route('/')
 @books.route('/books')
