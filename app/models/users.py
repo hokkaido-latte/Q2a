@@ -29,8 +29,6 @@ class User(UserMixin, db.Document):
     # def addAvatar(user):
     #     user.save()
 
-
-
     @staticmethod
     def getAllUsers():
         return User.objects()
