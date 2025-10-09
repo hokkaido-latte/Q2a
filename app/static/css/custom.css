@@ -181,3 +181,8 @@ tr {
     transform: translateY(-1px);
 }
 
+/* Add this to your custom.css file */
+.button-spacer {
+    /* Forces a margin of 1rem (Bootstrap '4' spacing) on the right */
+    margin-right: 0.5rem !important;
+}
