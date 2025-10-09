@@ -25,7 +25,8 @@ body {
 }
 
 .bottom-border {
-    border-bottom: 1px solid #333;
+    /*border-bottom: 1px solid #333;*/
+    border-bottom: 1px solid white;
 }
 
 .sidebar-link {

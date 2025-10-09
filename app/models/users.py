@@ -8,6 +8,7 @@ class User(UserMixin, db.Document):
     email = db.StringField(max_length=30)
     password = db.StringField()
     name = db.StringField()
+    avatar = db.StringField()
     
     @staticmethod
     def getUser(email):
@@ -21,7 +22,7 @@ class User(UserMixin, db.Document):
     def createUser(email, name, password):
         user = User.getUser(email)
         if not user:
-            user = User(email=email, name=name, password=password).save()
+            user = User(email=email, name=name, password=password, avatar="").save()
         return user  
 
     # @staticmethod

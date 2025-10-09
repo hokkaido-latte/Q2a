@@ -175,6 +175,7 @@ all_books = [
 from flask_mongoengine import MongoEngine
 from app import db
 
+
 class Book(db.Document):
     meta = {'collection': 'books'}
     genres = db.ListField(db.StringField(max_length=30))
@@ -216,3 +217,4 @@ class Book(db.Document):
     @staticmethod
     def deleteBook(book):
         book.delete()
+

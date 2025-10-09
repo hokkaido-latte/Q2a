@@ -1,76 +1,8 @@
-# # from flask_login import login_user, login_required, logout_user, current_user
-# from flask import Blueprint, request, redirect, render_template, url_for
-# from werkzeug.security import generate_password_hash, check_password_hash
-# from flask_login import login_user, login_required, logout_user, current_user
-# # from models.forms import BookForm
-
-# # from models.users import User
-# from ..models.forms import RegForm
-# from ..models.users import User
-# from ..models.books import all_books, Book
-
-# books = Blueprint('bookController', __name__) 
-
-# @books.route('/')
-# @books.route('/books')
-# def books_list():
-#     allBooks = Book.getAllBooks()
-#     return render_template('books.html', panel="Book Titles", books=allBooks)
-
-
-# @books.route("/bookDetails/<string:book_title>")
-# def viewBookDetail(book_title):
-#     book = Book.getBook(title=book_title)
-#     if book:
-#         print(f"Book '{book_title}' exists in Mongo")
-#         return render_template('bookDetails.html', panel="Book Titles", book=book)
-#     else:
-#         # fallback_book = next((b for b in all_books if b['title'] == book_title), None)
-#         # if fallback_book:
-#         #     print(f"Book '{book_title}' found in dictionary variable")
-#         #     return render_template('bookDetails.html', panel="Book Titles", book=fallback_book)
-#         # else:
-#         #     print(f"Book '{book_title}' not found in both Mongo and fallback data")
-#         #     return "Book not found", 404
-#         return "Book not found", 404
-
-# @books.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = RegForm()
-#     if request.method == 'POST':
-#         print(request.form.get('checkbox'))
-#         if form.validate():
-#             check_user = User.getUser(email=form.email.data)
-#             if check_user:
-#                 if check_password_hash(check_user['password'], form.password.data):
-#                     login_user(check_user)
-#                     return redirect(url_for('bookController.books'))      
-#                 else:
-#                     form.password.errors.append("User Password Not Correct")
-#             else:
-#                 form.email.errors.append("No Such User")
-#     return render_template('login.html', form=form, panel="Login")
-
-# @books.route('/register', methods=['GET', 'POST'])
-# def register():
-#     form = RegForm()
-#     if request.method == 'POST':
-#         if form.validate():
-#             existing_user = User.getUser(email=form.email.data)
-#             if not existing_user:
-#                 hashpass = generate_password_hash(form.password.data, method='sha256')
-#                 User.createUser(email=form.email.data,password=hashpass, name=form.name.data)
-#                 return redirect(url_for('bookController.login'))
-#             else:
-#                 form.email.errors.append("User already existed")
-#                 render_template('register.html', form=form, panel="Register")
-#     return render_template('register.html', form=form, panel="Register")
-
-from flask import Blueprint, request, redirect, render_template, url_for
+from flask import Blueprint, request, redirect, render_template, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 
-from ..models.forms import RegForm
+from ..models.forms import RegForm, BookForm
 from ..models.users import User
 from ..models.books import all_books, Book
 
@@ -88,7 +20,7 @@ if not peteroh:
 
 allUsers = User.getAllUsers()
 for eachuser in allUsers:
-    print(eachuser.getName())
+    print(eachuser['name'])
 
 @books.route('/')
 @books.route('/books')
@@ -101,7 +33,7 @@ def viewBookDetail(book_title):
     book = Book.getBook(title=book_title)
     if book:
         print(f"Book '{book_title}' exists in Mongo")
-        return render_template('bookDetails.html', panel="Book Titles", book=book)
+        return render_template('bookDetails.html', panel="Book Details", book=book)
     else:
         return "Book not found", 404
 
@@ -143,3 +75,43 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('bookController.books_list'))
+
+@books.route('/addbook', methods = ['GET','POST'])
+@login_required
+def addBook():
+    form = BookForm()
+    genres = ["Animals", "Business", "Comics", "Communication", "Dark Academia", "Emotion", "Fantasy", "Fiction", "Friendship", "Graphic Novels", "Grief", 
+"Historical Fiction", "Indigenous", "Inspirational", "Magic", "Mental Health", 
+"Nonfiction", "Personal Development",  "Philosophy", "Picture Books", "Poetry", "Productivity", "Psychology", "Romance", "School", "Self Help"] 
+
+    form.genres.choices = [(genre, genre) for genre in genres]
+
+    if form.validate_on_submit():
+        try:
+            authors_data = [
+                entry.author_name.data.strip()
+                for entry in form.authors
+                if entry.author_name.data and entry.author_name.data.strip()
+            ]
+            
+            description_data=form.description.data
+            if isinstance(description_data, str):
+                description_list = [d.strip() for d in form.description.data.split('\n') if d.strip()]
+
+            Book.createBook(
+                genres=form.genres.data, 
+                title=form.title.data, 
+                category=form.category.data,
+                url=form.url.data,
+                description=description_list,
+                authors=authors_data,
+                pages=int(form.pages.data),
+                available=int(form.copies.data),
+                copies=int(form.copies.data)
+                )
+            return redirect(url_for('bookController.books_list'))
+        except Exception as e:
+            print(f"Error creating book: {e}")
+            flash("An error occurred while adding your book")
+   
+    return render_template('addbook.html', panel="Add A Book",genres=genres, form=form)
