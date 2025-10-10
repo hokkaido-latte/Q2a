@@ -27,11 +27,11 @@ allUsers = User.getAllUsers()
 for eachuser in allUsers:
     print(eachuser['name'])
 
-allLoans = Loan.getAllLoans()
-for eachLoan in allLoans:
-    Loan.deleteLoan(eachLoan)
+# allLoans = Loan.getAllLoans()
+# for eachLoan in allLoans:
+#     Loan.deleteLoan(eachLoan)
 
-Book.restoreAllAvailability()
+# Book.restoreAllAvailability()
 
 @books.route('/')
 @books.route('/books')
@@ -58,7 +58,6 @@ def login():
             if check_user:
                 if check_password_hash(check_user['password'], form.password.data):
                     login_user(check_user)
-                    # FIX 3: Changed 'bookController.books' to 'bookController.books_list'
                     return redirect(url_for('bookController.books_list'))
                 else:
                     form.password.errors.append("User Password Not Correct")
@@ -155,3 +154,58 @@ def loanBook(book_title):
 
     flash("Admin account cannot use loan feature", "warning")
     return redirect(url_for('bookController.books_list'))
+
+
+@books.route('/loans')
+@login_required
+def viewLoans():
+    member = current_user
+    loans = Loan.getLoansByMember(member)
+    loans = sorted(loans, key=lambda loan: loan.getDueDate(), reverse=True)
+    today = datetime.now()
+    return render_template('loans.html', panel="Current Loans", loans=loans, today=today)
+
+@books.route('/returnloan/<book_title>', methods=['POST'])
+@login_required
+def returnLoan(book_title):
+    loan = Loan.getLoanByMemberAndBook(current_user, Book.getBook(title=book_title))
+    if loan:
+        max_days = min(20, (datetime.now()-loan.borrowDate).days)
+        if max_days < 10:
+           returndate=datetime.now()
+        else:
+            returndate = loan.borrowDate + timedelta(days=random.randint(10, max_days))
+        Loan.loanReturn(loan, returndate)
+        flash(f"{book_title} returned successfully!")
+    else:
+        flash(f"Failed to return {book_title}!", "danger")
+    return redirect(url_for('bookController.viewLoans'))
+
+
+@books.route('/renewloan/<book_title>', methods=['POST'])
+@login_required
+def renewLoan(book_title):
+    loan = Loan.getLoanByMemberAndBook(current_user, Book.getBook(title=book_title))
+    if loan and loan.renewCount < 2:
+        max_days = min(20, (datetime.now()-loan.borrowDate).days)
+        if max_days < 10:
+           newBorrowDate=datetime.now()
+        else:
+            newBorrowDate = loan.borrowDate + timedelta(days=random.randint(10, max_days))
+        Loan.loanRenew(loan, newBorrowDate)
+        flash(f"Renew loan for {book_title} successful!")
+    else:
+        flash(f"Failed to renew loan for {book_title}", "danger")
+    return redirect(url_for('bookController.viewLoans'))
+
+
+@books.route('/deleteloan/<book_title>', methods=['POST'])
+@login_required
+def deleteLoan(book_title):
+    loan = Loan.getLoanByMemberAndBook(current_user, Book.getBook(title=book_title))
+    if loan:
+        Loan.deleteLoan(loan)
+        flash(f"{book_title} loan deleted successfully!")
+    else:
+        flash(f"Failed to delete {book_title} loan!", "danger")
+    return redirect(url_for('bookController.viewLoans'))

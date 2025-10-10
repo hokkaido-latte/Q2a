@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block mainblock %}
+
+{% if loans|length == 0 %}
+<div>
+    <h3 class="text-start mt-4">You have no loans at the moment.</h3>
+</div>
+{% else %}
+<div class="container mt-4">
+    <table class="table align-middle text-center">
+        <thead style="background-color: white !important" >
+            <tr>
+                <th scope="col">Title / Author</th>
+                <th scope="col">Due Date</th>
+                <th scope="col">Return Date</th>
+                <th scope="col">Renew Count</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+            {% set due_date = loan.getDueDate() %}
+            <tr>
+                <!-- Book Info -->
+                <td class="text-start align-top">
+                    <div class="d-flex flex-column align-items-start w-100 text-start">
+                        <img src="{{ loan.book.url or '' }}"
+                             alt="Book cover"
+                             class="img-thumbnail mb-2"
+                             style="width: 60px; height: auto;">
+                        <div class="w-100 text-start">
+                            <p class="mb-1 text-start" style="margin: 0;">{{ loan.book.title or 'Untitled' }}</p>
+                            <p class="mb-0 text-start" style="margin: 0;">By {{ loan.book.authors|join(', ') if loan.book.authors else 'Unknown' }}</p>
+                        </div>
+                    </div>
+                </td>
+
+                <!-- Due Date -->
+                <td>
+                    {% if due_date %}
+                    {% if not loan.returnDate and due_date < today %}
+                    <span class="fw-bold">{{ due_date.strftime("%d %b %Y") }}</span>
+                    {% else %}
+                    {{ due_date.strftime("%d %b %Y") }}
+                    {% endif %}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+
+                <!-- Return Date -->
+                <td>
+                    {% if loan.returnDate %}
+                    {{ loan.returnDate.strftime("%d %b %Y") }}
+                    {% endif %}
+                </td>
+
+                <!-- Renew Count -->
+                <td>{{ loan.renewCount or 0 }}</td>
+
+                <!-- Buttons -->
+                <td class="align-middle" style="vertical-align: middle;">
+                    <div class="d-flex justify-content-start align-items-center" style="width: 160px; height: 100%; min-height: 50px;">
+                        {% if loan.returnDate %}
+                        <!-- Returned - Show Delete button only -->
+                        <form action="{{ url_for('bookController.deleteLoan', book_title=loan.book.title) }}" method="post">
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+
+                        {% elif due_date and (due_date < today or loan.renewCount >= 2) %}
+                        <!-- Overdue or Max Renewals - Show Return button only -->
+                        <form action="{{ url_for('bookController.returnLoan', book_title=loan.book.title) }}" method="post">
+                            <button class="btn btn-success btn-sm">Return</button>
+                        </form>
+
+                        {% else %}
+                        <!-- Active Loan - Show both buttons side by side -->
+                        <form action="{{ url_for('bookController.returnLoan', book_title=loan.book.title) }}" method="post">
+                            <button class="btn btn-success btn-sm button-spacer">Return</button>
+                        </form>
+                        <form action="{{ url_for('bookController.renewLoan', book_title=loan.book.title) }}" method="post" class="ms-2">
+                            <button class="btn btn-success btn-sm">Renew</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -186,3 +186,12 @@ tr {
     /* Forces a margin of 1rem (Bootstrap '4' spacing) on the right */
     margin-right: 0.5rem !important;
 }
+
+thead th {
+    background-color: white !important;
+    color: black;
+}
+
+td.text-start, td .text-start, td p {
+    text-align: left !important;
+}

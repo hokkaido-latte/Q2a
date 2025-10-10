@@ -1,7 +1,7 @@
-import stat
 from flask_mongoengine import MongoEngine
-from app import db
+from .. import db
 from ..models.books import Book
+from datetime import datetime, timedelta
 
 class Loan(db.Document):
     # Define the collection name
@@ -85,3 +85,8 @@ class Loan(db.Document):
     @staticmethod
     def getAllLoans():
         return Loan.objects()
+
+
+    def getDueDate(self):
+        #Return due date which is 14 days from borrow date
+        return self.borrowDate + timedelta(days=14)
